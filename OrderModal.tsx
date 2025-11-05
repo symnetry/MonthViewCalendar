@@ -44,17 +44,22 @@ const OrderModal: React.FC<OrderModalProps> = ({
   // 从选中单元格中提取房间和日期信息
   useEffect(() => {
     if (visible && selectedCells.length > 0) {
-      // 提取选中的房间IDs
+      // 提取选中的房间IDs（通过rowIndex确定）
       console.log('所有房间:', allRooms);
-      const roomNumbers = selectedCells
-        .filter(cell => cell.roomno)
-        .map(cell => cell.roomno);
-      console.log('选中的房间号:', selectedCells);
-      const selectedRoomIds = allRooms
-        .filter(room => roomNumbers.includes(room.roomno))
-        .map(room => room.id);
-
-        console.log('选中的房间IDs:', selectedRoomIds);
+      console.log('选中的单元格:', selectedCells);
+      
+      // 通过rowIndex确定房间，假设rowIndex与房间数组索引对应
+      // 排除第0行（可能是表头）
+      const roomIndices = [...new Set(selectedCells
+        .filter(cell => typeof cell.rowIndex === 'number' && cell.rowIndex > 0)
+        .map(cell => cell.rowIndex - 1))]; // 减去1得到房间数组的索引
+      
+      console.log('房间索引:', roomIndices);
+      const selectedRoomIds = roomIndices
+        .filter(index => index >= 0 && index < allRooms.length)
+        .map(index => allRooms[index].id);
+      
+      console.log('选中的房间IDs:', selectedRoomIds);
       
       // 提取选中的日期范围
       const dates = selectedCells
@@ -169,7 +174,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
         <Form.Item
           name="price"
           label="房费"
-          rules={[{ required: true, message: '请输入房费' }, { min: 0, message: '房费不能为负数' }]}
+          rules={[{ required: true, message: '请输入房费' }]}
         >
           <InputNumber
             style={{ width: '100%' }}
