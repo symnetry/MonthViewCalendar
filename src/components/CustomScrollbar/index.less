@@ -1,0 +1,52 @@
+// components/CustomScrollbar/index.less
+.customScrollWrapper {
+  height: 100%;
+  position: relative;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 8px;
+  // border: 1px solid #ddd;
+}
+
+.scrollContent {
+  height: 100%;
+  width: 100%;
+  // padding: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.sdm_content_scrollline {
+  align-self: center;
+  background-color: #f3f3f35c;
+  height: calc(6rem * 1);
+  position: fixed;
+  right: 0.6rem;
+  width: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  z-index: 10;
+}
+
+.scrollThumb {
+  background-color: #ffffff;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  transform: scaleY(var(--p, 0));
+  transform-origin: top;
+  width: 100%;
+  border-radius: 2px;
+  transition: transform 0.1s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: #e0e0e0;
+  }
+}

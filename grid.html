@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid - grid-template-columns 示例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4cc9f0;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a5b1c2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .examples-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 30px;
+        }
+
+        .example-card {
+            background-color: #16213e;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background-color: #0f3460;
+            border-bottom: 1px solid #1a5fb4;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #4cc9f0;
+            margin-bottom: 5px;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: #a5b1c2;
+        }
+
+        .card-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .code-container {
+            background-color: #0c1427;
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+        }
+
+        .code-container pre {
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .visualization {
+            background-color: #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-container {
+            flex: 1;
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+            background-color: #2d3748;
+            border-radius: 5px;
+            min-height: 150px;
+        }
+
+        .grid-item {
+            background-color: #4cc9f0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a1a2e;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 0.8rem;
+            color: #a5b1c2;
+        }
+
+        .control-group input, .control-group select {
+            background-color: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: #e2e8f0;
+            font-size: 0.8rem;
+            width: 80px;
+        }
+
+        button {
+            background-color: #4cc9f0;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #3aa8c9;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #a5b1c2;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .examples-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CSS Grid - grid-template-columns 属性详解</h1>
+            <p class="subtitle">探索 grid-template-columns 属性的各种用法和效果。每种示例都包含代码和实时可视化效果。</p>
+        </header>
+
+        <div class="examples-container">
+            <!-- 示例1: 基本长度单位 -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">基本长度单位</h2>
+                    <p class="card-description">使用固定像素值和fr单位定义列</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: 100px 1fr;</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example1">
+                            <div class="grid-item">1</div>
+                            <div class="grid-item">2</div>
+                            <div class="grid-item">3</div>
+                            <div class="grid-item">4</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example1-col1">列1:</label>
+                                <input type="text" id="example1-col1" value="100px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example1-col2">列2:</label>
+                                <input type="text" id="example1-col2" value="1fr">
+                            </div>
+                            <button onclick="updateExample(1)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 示例2: 使用网格线名称 -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">使用网格线名称</h2>
+                    <p class="card-description">为网格线命名，便于定位</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: [start] 100px [middle] 1fr [end];</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example2">
+                            <div class="grid-item">1</div>
+                            <div class="grid-item">2</div>
+                            <div class="grid-item">3</div>
+                            <div class="grid-item">4</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example2-line1">线1:</label>
+                                <input type="text" id="example2-line1" value="start">
+                            </div>
+                            <div class="control-group">
+                                <label for="example2-col1">列1:</label>
+                                <input type="text" id="example2-col1" value="100px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example2-line2">线2:</label>
+                                <input type="text" id="example2-line2" value="middle">
+                            </div>
+                            <div class="control-group">
+                                <label for="example2-col2">列2:</label>
+                                <input type="text" id="example2-col2" value="1fr">
+                            </div>
+                            <button onclick="updateExample(2)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 示例3: minmax() 函数 -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">minmax() 函数</h2>
+                    <p class="card-description">定义列的最小和最大尺寸</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: minmax(100px, 1fr) minmax(200px, 2fr);</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example3">
+                            <div class="grid-item">1</div>
+                            <div class="grid-item">2</div>
+                            <div class="grid-item">3</div>
+                            <div class="grid-item">4</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example3-min1">最小:</label>
+                                <input type="text" id="example3-min1" value="100px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example3-max1">最大:</label>
+                                <input type="text" id="example3-max1" value="1fr">
+                            </div>
+                            <div class="control-group">
+                                <label for="example3-min2">最小:</label>
+                                <input type="text" id="example3-min2" value="200px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example3-max2">最大:</label>
+                                <input type="text" id="example3-max2" value="2fr">
+                            </div>
+                            <button onclick="updateExample(3)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 示例4: fit-content() 函数 -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">fit-content() 函数</h2>
+                    <p class="card-description">根据内容调整列宽，但不超过指定最大值</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: fit-content(100px) fit-content(200px);</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example4">
+                            <div class="grid-item">短文本</div>
+                            <div class="grid-item">这是一段较长的文本内容</div>
+                            <div class="grid-item">短</div>
+                            <div class="grid-item">另一段非常长的文本内容，用于演示效果</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example4-col1">列1:</label>
+                                <input type="text" id="example4-col1" value="100px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example4-col2">列2:</label>
+                                <input type="text" id="example4-col2" value="200px">
+                            </div>
+                            <button onclick="updateExample(4)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 示例5: repeat() 函数 -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">repeat() 函数</h2>
+                    <p class="card-description">重复创建相同尺寸的列</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: repeat(3, 100px);</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example5">
+                            <div class="grid-item">1</div>
+                            <div class="grid-item">2</div>
+                            <div class="grid-item">3</div>
+                            <div class="grid-item">4</div>
+                            <div class="grid-item">5</div>
+                            <div class="grid-item">6</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example5-count">重复次数:</label>
+                                <input type="number" id="example5-count" value="3" min="1" max="6">
+                            </div>
+                            <div class="control-group">
+                                <label for="example5-size">尺寸:</label>
+                                <input type="text" id="example5-size" value="100px">
+                            </div>
+                            <button onclick="updateExample(5)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 示例6: auto-fill 和 auto-fit -->
+            <div class="example-card">
+                <div class="card-header">
+                    <h2 class="card-title">auto-fill 和 auto-fit</h2>
+                    <p class="card-description">自动填充或适应可用空间</p>
+                </div>
+                <div class="card-content">
+                    <div class="code-container">
+                        <pre>grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));</pre>
+                    </div>
+                    <div class="visualization">
+                        <div class="grid-container" id="example6">
+                            <div class="grid-item">1</div>
+                            <div class="grid-item">2</div>
+                            <div class="grid-item">3</div>
+                            <div class="grid-item">4</div>
+                            <div class="grid-item">5</div>
+                            <div class="grid-item">6</div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-group">
+                                <label for="example6-type">类型:</label>
+                                <select id="example6-type">
+                                    <option value="auto-fill">auto-fill</option>
+                                    <option value="auto-fit">auto-fit</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="example6-min">最小:</label>
+                                <input type="text" id="example6-min" value="120px">
+                            </div>
+                            <div class="control-group">
+                                <label for="example6-max">最大:</label>
+                                <input type="text" id="example6-max" value="1fr">
+                            </div>
+                            <button onclick="updateExample(6)">应用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>CSS Grid Layout - grid-template-columns 属性示例 | 使用纯HTML、CSS和JavaScript实现</p>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化示例
+        function initializeExamples() {
+            updateExample(1);
+            updateExample(2);
+            updateExample(3);
+            updateExample(4);
+            updateExample(5);
+            updateExample(6);
+        }
+
+        // 更新示例
+        function updateExample(exampleNumber) {
+            const container = document.getElementById(`example${exampleNumber}`);
+            
+            switch(exampleNumber) {
+                case 1:
+                    const col1 = document.getElementById('example1-col1').value;
+                    const col2 = document.getElementById('example1-col2').value;
+                    container.style.gridTemplateColumns = `${col1} ${col2}`;
+                    break;
+                    
+                case 2:
+                    const line1 = document.getElementById('example2-line1').value;
+                    const col1_2 = document.getElementById('example2-col1').value;
+                    const line2 = document.getElementById('example2-line2').value;
+                    const col2_2 = document.getElementById('example2-col2').value;
+                    container.style.gridTemplateColumns = `[${line1}] ${col1_2} [${line2}] ${col2_2}`;
+                    break;
+                    
+                case 3:
+                    const min1 = document.getElementById('example3-min1').value;
+                    const max1 = document.getElementById('example3-max1').value;
+                    const min2 = document.getElementById('example3-min2').value;
+                    const max2 = document.getElementById('example3-max2').value;
+                    container.style.gridTemplateColumns = `minmax(${min1}, ${max1}) minmax(${min2}, ${max2})`;
+                    break;
+                    
+                case 4:
+                    const fit1 = document.getElementById('example4-col1').value;
+                    const fit2 = document.getElementById('example4-col2').value;
+                    container.style.gridTemplateColumns = `fit-content(${fit1}) fit-content(${fit2})`;
+                    break;
+                    
+                case 5:
+                    const count = document.getElementById('example5-count').value;
+                    const size = document.getElementById('example5-size').value;
+                    container.style.gridTemplateColumns = `repeat(${count}, ${size})`;
+                    break;
+                    
+                case 6:
+                    const type = document.getElementById('example6-type').value;
+                    const min = document.getElementById('example6-min').value;
+                    const max = document.getElementById('example6-max').value;
+                    container.style.gridTemplateColumns = `repeat(${type}, minmax(${min}, ${max}))`;
+                    break;
+            }
+        }
+
+        // 页面加载完成后初始化示例
+        document.addEventListener('DOMContentLoaded', initializeExamples);
+    </script>
+</body>
+</html>
