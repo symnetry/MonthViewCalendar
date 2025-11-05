@@ -9,8 +9,9 @@ interface RenderParams {
   hoverInfo: HoverInfo;
   orderGridMap: Map<string, OrderPosition>;
   isDragging: boolean;
-  dragStart: { x: number; y: number; cell?: CellData } | null;
+  dragStart: { x: number; y: number; cell?: CellData; order?: any } | null;
   dragEnd: { x: number; y: number } | null;
+  draggingOrder: any | null;
   colorScheme:ColorScheme
 }
 
@@ -23,6 +24,7 @@ export const renderToCanvas = ({
     isDragging,
     dragStart,
     dragEnd,
+    draggingOrder,
     colorScheme
 }: RenderParams): void => {
     // console.log(canvas)
@@ -207,8 +209,47 @@ export const renderToCanvas = ({
         }
       });
     });
-        //绘制拖拽选择框
-        if (isDragging && dragStart && dragEnd) {
+        // 渲染拖拽中的订单
+        if (isDragging && dragStart?.order && draggingOrder && dragEnd) {
+            // 计算拖拽偏移
+            const offsetX = dragEnd.x - dragStart.x;
+            const offsetY = dragEnd.y - dragStart.y;
+            
+            // 找到原始订单位置
+            const originalPosition = orderGridMap.get(draggingOrder.id);
+            if (originalPosition) {
+                const newX = originalPosition.x + offsetX;
+                const newY = originalPosition.y + offsetY;
+                
+                // 绘制拖拽中的订单（半透明）
+                ctx.save();
+                ctx.globalAlpha = 0.7; // 半透明效果
+                
+                // 绘制订单背景
+                const orderColor = getOrderColor(draggingOrder.netaboutplatform);
+                ctx.fillStyle = orderColor;
+                ctx.fillRect(newX, newY, originalPosition.width, originalPosition.height);
+                
+                // 绘制订单边框
+                ctx.strokeStyle = colorScheme.border;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(newX, newY, originalPosition.width, originalPosition.height);
+                
+                // 绘制订单文本
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = colorScheme.black;
+                ctx.font = `${canvasConfig.fontSize}px sans-serif`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                
+                const textX = newX + 30;
+                ctx.fillText(draggingOrder.ordername || '无名订单', textX, newY + originalPosition.height / 3);
+                ctx.fillText(getPlatformName(draggingOrder.netaboutplatform), textX, newY + originalPosition.height * 2 / 3);
+                
+                ctx.restore();
+            }
+        } else if (isDragging && dragStart && dragEnd) {
+            //绘制普通拖拽选择框
             const x = Math.min(dragStart.x, dragEnd.x);
             const y = Math.min(dragStart.y, dragEnd.y);
             const width = Math.abs(dragEnd.x - dragStart.x);
@@ -221,7 +262,6 @@ export const renderToCanvas = ({
 
             // 填充半透明背景
             ctx.fillStyle = 'rgba(212, 175, 55, 0.1)';
-            // ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
             ctx.fillRect(x, y, width, height);
 
             ctx.setLineDash([]); // 重置虚线样式

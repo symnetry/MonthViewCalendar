@@ -1,4 +1,5 @@
 import { CellData, OrderPosition,Order } from '../types';
+import dayjs from 'dayjs';
 
     // 提取公共函数：获取鼠标在画布上的相对位置
   export const getRelativeMousePos = (e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) => {
@@ -56,4 +57,23 @@ import { CellData, OrderPosition,Order } from '../types';
         }
       }
       return { cell: null, rowIndex: -1 };
+    };
+
+    // 提取公共函数：检测订单冲突
+  export const checkOrderConflict = (roomIds: string[], dateRange: [dayjs.Dayjs, dayjs.Dayjs], existingOrders: Order[]) => {
+      const [startDate, endDate] = dateRange;
+      const conflictingOrders: Order[] = [];
+      console.log()
+      existingOrders.forEach(order => {
+        // 检查房间是否冲突
+        if (roomIds.includes(order.roomId)) {
+          // 检查日期范围是否重叠
+          // 重叠条件：新订单的开始日期 < 现有订单的结束日期 并且 新订单的结束日期 > 现有订单的开始日期
+          if (startDate.isBefore(order.checkout) && endDate.isAfter(order.checkin)) {
+            conflictingOrders.push(order);
+          }
+        }
+      });
+      
+      return conflictingOrders;
     };

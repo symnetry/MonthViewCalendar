@@ -67,6 +67,16 @@ const Moonview = () => {
     setIsModalVisible(false);
     setSelectedCells([]);
   };
+  
+  // 处理订单更新（拖拽移动订单）
+  const handleOrderUpdate = (updatedOrder: Order) => {
+    setOrders(prevOrders => 
+      prevOrders.map(order => 
+        order.id === updatedOrder.id ? updatedOrder : order
+      )
+    );
+    message.success('订单已成功移动');
+  };
 
   return (
     <div >
@@ -80,6 +90,7 @@ const Moonview = () => {
         onOrderSelect={handleOrderSelect}
         onCellSelect={handleCellSelect}
         onMutipleSelect={handleMutipleSelect}
+        onOrderUpdate={handleOrderUpdate}
       />
       
       {/* 订单创建模态框 */}
