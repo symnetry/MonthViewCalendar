@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { generateMonthViewData } from './dataGenerators';
 import { renderToCanvas } from './renderers/canvasRenderer';
 import { getRelativeMousePos, checkOrderHit, checkCellHit, checkOrderConflict } from './utils/positionUtils';
-import { getPlatformName } from './utils/utils';
+import { getPlatformName,throttle } from './utils/utils';
 import { canvasConfig } from './constants'; //配色方案
 import { CellData, HoverInfo, OrderPosition,Room,Order } from './types';
 const { RangePicker } = DatePicker;
@@ -267,8 +267,8 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 		}
 	}, [sdata]);
 
-  	// 拖拽过程
-	const handleDragging = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  	// 拖拽过程的实际处理函数
+	const handleDraggingProcess = (e: React.MouseEvent<HTMLCanvasElement>) => {
 		if (!isDragging || !dragStart) return;
 		
 		const canvas = canvasRef.current;
@@ -364,7 +364,15 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 		});
 
 		setSelection(selectedCells);
-	}, [isDragging, dragStart, sdata, draggingOrder]);
+	};
+	
+	// 创建节流版本的拖拽处理函数
+	const handleDragging = useCallback(
+		throttle((e: React.MouseEvent<HTMLCanvasElement>) => {
+			handleDraggingProcess(e);
+		}, 48), // 50毫秒的节流延迟，可根据需要调整
+		[isDragging, dragStart, sdata, draggingOrder, hoverInfo, colorScheme]
+	);
 
 	// 处理订单拖拽结束
   const handleOrderDragEnd = () => {
