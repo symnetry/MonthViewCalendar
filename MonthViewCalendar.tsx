@@ -208,7 +208,6 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
     );
     
     if (cell) {
-    	// console.log('selection',selection)
       // console.log('点击了普通单元格，单元格:', cell);
       onCellSelect?.(cell); // 触发单元格选中回调
       // if([0, 1].includes(selection.length))onCellSelect?.(cell); // 触发单元格选中回调
