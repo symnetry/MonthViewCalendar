@@ -5,7 +5,7 @@ import { generateMonthViewData } from './dataGenerators';
 import { renderToCanvas } from './renderers/canvasRenderer';
 import { getRelativeMousePos, checkOrderHit, checkCellHit } from './utils/positionUtils';
 import { getPlatformName } from './utils/utils';
-import { /*colorScheme*/canvasConfig } from './constants'; //配色方案
+import { canvasConfig } from './constants'; //配色方案
 import { CellData, HoverInfo, OrderPosition,Room,Order } from './types';
 const { RangePicker } = DatePicker;
 
