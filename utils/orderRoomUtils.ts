@@ -1,5 +1,5 @@
 import { CellData, Room, Order } from '../types';
-import { Moment } from 'moment';
+import dayjs from 'dayjs';
 
 // 建立房间ID到行索引的映射
 export const buildRoomIndexMap = (rooms: Room[]): Map<string, number> => {
@@ -45,18 +45,27 @@ export const processRoomTypeMerge = (sdata: CellData[][]): CellData[][] => {
 export const matchOrdersToCells = (
   sdata: CellData[][],
   orders: Order[],
-  startDate: Moment
+  startDate: dayjs.Dayjs
 ): void => {
-  const roomIndexMap = buildRoomIndexMap(sdata as unknown as Room[]); // 实际应传入rooms参数
+  // 从sdata中提取房间信息
+  const rooms: Room[] = [];
+  for (let i = 1; i < sdata.length; i++) {
+    const cell = sdata[i]?.[0];
+    if (cell && cell.roomno) {
+      rooms.push({ _id: cell.roomno, roomtype: cell.roomtype || '', roomno: cell.roomno });
+    }
+  }
+  const roomIndexMap = buildRoomIndexMap(rooms);
 
   orders.forEach(order => {
     const rowIndex = roomIndexMap.get(order.roomid);
     if (rowIndex === undefined) return;
 
-    const orderCheckInMoment = moment(order.checkintime).startOf('day');
-    const daysFromStart = orderCheckInMoment.diff(startDate, 'days');
+    const orderCheckIn = dayjs(order.checkintime).startOf('day');
+    const orderCheckOut = dayjs(order.checkouttime).startOf('day');
+    const daysFromStart = orderCheckIn.diff(startDate, 'days');
     const startColIndex = 2 + daysFromStart;
-    const orderDuration = Math.ceil((order.checkouttime - order.checkintime) / (24 * 60 * 60 * 1000));
+    const orderDuration = orderCheckOut.diff(orderCheckIn, 'days');
 
     for (let dayOffset = 0; dayOffset < orderDuration; dayOffset++) {
       const currentColIndex = startColIndex + dayOffset;

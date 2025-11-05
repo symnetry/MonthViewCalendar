@@ -1,7 +1,7 @@
 import { CellData, HoverInfo, OrderPosition,ColorScheme } from '../types';
 import { canvasConfig } from '../constants';
 import { drawRoundedRect } from '../utils/canvasUtils';
-import { getPlatformName, getOrderColor } from '../utils/otaUtils';
+import { getPlatformName, getOrderColor } from '../utils/utils';
 
 interface RenderParams {
   canvas: HTMLCanvasElement | null;

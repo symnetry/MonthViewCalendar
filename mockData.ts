@@ -1,4 +1,4 @@
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Room, Order } from './types';
 
 // 模拟房间数据
@@ -15,24 +15,24 @@ export const mockOrders: Order[] = [
   {
     id: 'order1',
     roomId: '1',
-    checkin: moment().add(1, 'day'),
-    checkout: moment().add(3, 'day'), // 跨2天（1-3日，共2晚）
+    checkin: dayjs().add(1, 'day'),
+    checkout: dayjs().add(3, 'day'), // 跨2天（1-3日，共2晚）
     netaboutplatform: 1,
     ordername: '张三'
   },
   {
     id: 'order2',
     roomId: '3',
-    checkin: moment().add(2, 'day'),
-    checkout: moment().add(5, 'day'), // 跨3天（2-5日，共3晚）
+    checkin: dayjs().add(2, 'day'),
+    checkout: dayjs().add(5, 'day'), // 跨3天（2-5日，共3晚）
     netaboutplatform: 2,
     ordername: '李四'
   },
   {
     id: 'order3',
     roomId: '5',
-    checkin: moment().add(4, 'day'),
-    checkout: moment().add(6, 'day'), // 跨2天（4-6日，共2晚）
+    checkin: dayjs().add(4, 'day'),
+    checkout: dayjs().add(6, 'day'), // 跨2天（4-6日，共2晚）
     netaboutplatform: 3,
     ordername: '王五'
   },

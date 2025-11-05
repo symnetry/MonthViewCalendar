@@ -1,3 +1,5 @@
+import { CellData, OrderPosition,Order } from '../types';
+
     // 提取公共函数：获取鼠标在画布上的相对位置
   export const getRelativeMousePos = (e: React.MouseEvent<HTMLCanvasElement>, canvas: HTMLCanvasElement) => {
       const rect = canvas.getBoundingClientRect();

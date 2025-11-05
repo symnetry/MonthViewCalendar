@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { DatePicker } from 'antd';
-import moment, { Moment } from 'moment';
+import dayjs from 'dayjs';
 import { generateMonthViewData } from './dataGenerators';
 import { renderToCanvas } from './renderers/canvasRenderer';
 import { getRelativeMousePos, checkOrderHit, checkCellHit } from './utils/positionUtils';
@@ -11,12 +11,14 @@ const { RangePicker } = DatePicker;
 
 // 定义组件Props
 interface MonthViewCalendarProps {
-    rooms:Room,
-    orders:Order,
-    defaultDates?: [Moment, Moment]; // 可选：默认日期范围
-    onDateChange?: (dates: [Moment, Moment]) => void; // 日期范围变化回调
+    rooms:Room[],
+    orders:Order[],
+    colorScheme?: any; // 可选：配色方案
+    defaultDates?: [dayjs.Dayjs, dayjs.Dayjs]; // 可选：默认日期范围
+    onDateChange?: (dates: [dayjs.Dayjs, dayjs.Dayjs]) => void; // 日期范围变化回调
     onOrderSelect?: (orderId: string) => void; // 订单选中回调
     onCellSelect?: (cell: CellData) => void; // 单元格选中回调
+    onMutipleSelect?: (cells: CellData[]) => void; // 多选单元格回调
 }
 
 const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
@@ -30,8 +32,8 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 	onMutipleSelect
 }) => {
   // 状态管理
-	const [selectedDates, setSelectedDates] = useState<[Moment, Moment]>(
-		defaultDates || [moment().startOf('month'), moment().endOf('month')]
+	const [selectedDates, setSelectedDates] = useState<[dayjs.Dayjs, dayjs.Dayjs]>(
+		defaultDates || [dayjs().startOf('month'), dayjs().endOf('month')]
 	);
 	const [sdata, setSdata] = useState<CellData[][]>([]);
 	const [loading, setLoading] = useState(true);
@@ -84,9 +86,9 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
   }, [sdata, hoverInfo, isDragging, dragStart, dragEnd,colorScheme]);
 
   // 处理日期范围选择变化
-  const handleRangeChange = (dates: [Moment | null, Moment | null]) => {
+  const handleRangeChange = (dates: [dayjs.Dayjs | null, dayjs.Dayjs | null]) => {
     if (dates[0] && dates[1]) {
-      const newDates: [Moment, Moment] = [dates[0], dates[1]];
+      const newDates: [dayjs.Dayjs, dayjs.Dayjs] = [dates[0], dates[1]];
       setSelectedDates(newDates);
       onDateChange?.(newDates);
     }
@@ -133,6 +135,9 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
           sdata,
           hoverInfo:newHoverInfo,
           orderGridMap:orderGridMap.current,
+          isDragging: false,
+          dragStart: null,
+          dragEnd: null,
           colorScheme
         });
       }
@@ -157,23 +162,23 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
     }, [hoverInfo, sdata]);
 
     // 处理鼠标离开画布
-    const handleCanvasMouseLeave = useCallback(() => {
-        setHoverInfo({});
-        // renderToCanvas(canvasRef.current, sdata, {}, orderGridMap.current);
-        renderToCanvas({
-          canvas:canvasRef.current,
-          sdata,
-          hoverInfo:{},
-          orderGridMap:orderGridMap.current,
-          colorScheme
-        });
-        if (tooltipRef.current) {
-            tooltipRef.current.style.display = 'none';
-        }
-        if (isDragging) {
-            handleDragEnd();
-        }
-    }, [sdata,isDragging]);
+    // const handleCanvasMouseLeave = useCallback(() => {
+    //     setHoverInfo({});
+    //     // renderToCanvas(canvasRef.current, sdata, {}, orderGridMap.current);
+    //     renderToCanvas({
+    //       canvas:canvasRef.current,
+    //       sdata,
+    //       hoverInfo:{},
+    //       orderGridMap:orderGridMap.current,
+    //       colorScheme
+    //     });
+    //     if (tooltipRef.current) {
+    //         tooltipRef.current.style.display = 'none';
+    //     }
+    //     if (isDragging) {
+    //         handleDragEnd();
+    //     }
+    // }, [sdata,isDragging]);
 
   // 处理画布点击事件
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -409,7 +414,7 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
         <canvas
           ref={canvasRef}
           onMouseMove={(e) => isDragging?handleDragging(e):handleCanvasMouseMove(e)}
-          onMouseLeave={handleCanvasMouseLeave}
+          
           onClick={handleCanvasClick}
           onMouseDown={handleDragStart}
 

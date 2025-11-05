@@ -1,4 +1,4 @@
-import { Moment } from 'moment';
+import dayjs from 'dayjs';
 
 // 房间类型
 export interface Room {
@@ -12,8 +12,8 @@ export interface Room {
 export interface Order {
   id: string;
   roomId: string;
-  checkin: Moment;
-  checkout: Moment;
+  checkin: dayjs.Dayjs;
+  checkout: dayjs.Dayjs;
   netaboutplatform: number;
   ordername?: string;
 }
@@ -52,8 +52,8 @@ export interface CellData {
   order?: {
     id: string;
     roomId: string;
-    checkin: Moment;
-    checkout: Moment;
+    checkin: dayjs.Dayjs;
+    checkout: dayjs.Dayjs;
     netaboutplatform: number;
     ordername?: string;
   };
@@ -81,8 +81,8 @@ export interface OrderPosition {
 
 // 月视图日历组件属性
 export interface MonthViewCalendarProps {
-  defaultDates?: [Moment, Moment];
-  onDateChange?: (dates: [Moment, Moment]) => void;
+  defaultDates?: [dayjs.Dayjs, dayjs.Dayjs];
+  onDateChange?: (dates: [dayjs.Dayjs, dayjs.Dayjs]) => void;
   onOrderSelect?: (orderId: string) => void;
   onCellSelect?: (cell: CellData) => void;
 }

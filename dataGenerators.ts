@@ -1,10 +1,10 @@
-import { Moment } from 'moment';
+import dayjs from 'dayjs';
 import { CellData,Room,Order } from './types';
 import { mockRooms, mockOrders } from './mockData';
 import { getWeekDay } from './utils/dateUtils';
 
 // 生成月视图数据
-export const generateMonthViewData = async (dates: [Moment, Moment],rooms:Room,orders:Order): Promise<CellData[][]> => {
+export const generateMonthViewData = async (dates: [dayjs.Dayjs, dayjs.Dayjs],rooms:Room[],orders:Order[]): Promise<CellData[][]> => {
   console.log('开始生成数据:', rooms,orders);
   
   const [sd, ed] = dates;
@@ -60,7 +60,7 @@ export const generateMonthViewData = async (dates: [Moment, Moment],rooms:Room,o
 
   // 设置日期行（带完整日期信息）
   for (let j = 2; j < colCount; j++) {
-    const currentDate = sd.clone().add(j - 2, 'days');
+    const currentDate = sd.add(j - 2, 'day').clone();
     data[0][j] = {
       ...data[0][j],
       type: 'date',
@@ -100,7 +100,7 @@ export const generateMonthViewData = async (dates: [Moment, Moment],rooms:Room,o
         const checkinDate = matchedOrder.checkin.format('YYYY-MM-DD');
         const checkoutDate = matchedOrder.checkout.format('YYYY-MM-DD');
         const isStart = cellDate === checkinDate;
-        const isEnd = cellDate === currentDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
+        const isEnd = cellDate === currentDate.subtract(1, 'day').format('YYYY-MM-DD');
         
         data[i][j] = {
           ...data[i][j],
