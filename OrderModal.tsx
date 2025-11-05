@@ -45,13 +45,16 @@ const OrderModal: React.FC<OrderModalProps> = ({
   useEffect(() => {
     if (visible && selectedCells.length > 0) {
       // 提取选中的房间IDs
+      console.log('所有房间:', allRooms);
       const roomNumbers = selectedCells
         .filter(cell => cell.roomno)
         .map(cell => cell.roomno);
-      
+      console.log('选中的房间号:', selectedCells);
       const selectedRoomIds = allRooms
         .filter(room => roomNumbers.includes(room.roomno))
         .map(room => room.id);
+
+        console.log('选中的房间IDs:', selectedRoomIds);
       
       // 提取选中的日期范围
       const dates = selectedCells

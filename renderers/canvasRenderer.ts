@@ -184,7 +184,7 @@ export const renderToCanvas = ({
 
           case 'order':
             if (cell.hasorder && cell.order) {
-              ctx.textAlign = 'center';
+              ctx.textAlign = 'left'; // 修改为左对齐
               ctx.fillStyle = colorScheme.black;
               
               // 计算订单持续天数
@@ -195,8 +195,10 @@ export const renderToCanvas = ({
               const displayText = cell.isStart ? (cell.order.ordername || '无名订单') : '';
               
               if (displayText) {
-                ctx.fillText(displayText, x + width / 2, y + height / 3);
-                ctx.fillText(getPlatformName(cell.order.netaboutplatform), x + width / 2, y + height * 2 / 3);
+                // 修改文字位置，使其在单元格左侧显示
+                const paddingLeft = 30; // 左侧内边距
+                ctx.fillText(displayText, x + paddingLeft, y + height / 3);
+                ctx.fillText(getPlatformName(cell.order.netaboutplatform), x + paddingLeft, y + height * 2 / 3);
               }
               
               ctx.textAlign = 'start';

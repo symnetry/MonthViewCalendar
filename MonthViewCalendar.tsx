@@ -64,7 +64,6 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
         setLoading(false);
       }
     };
-
     loadData();
   }, [selectedDates,rooms,orders]);
 
@@ -161,32 +160,14 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
       }
     }, [hoverInfo, sdata]);
 
-    // 处理鼠标离开画布
-    // const handleCanvasMouseLeave = useCallback(() => {
-    //     setHoverInfo({});
-    //     // renderToCanvas(canvasRef.current, sdata, {}, orderGridMap.current);
-    //     renderToCanvas({
-    //       canvas:canvasRef.current,
-    //       sdata,
-    //       hoverInfo:{},
-    //       orderGridMap:orderGridMap.current,
-    //       colorScheme
-    //     });
-    //     if (tooltipRef.current) {
-    //         tooltipRef.current.style.display = 'none';
-    //     }
-    //     if (isDragging) {
-    //         handleDragEnd();
-    //     }
-    // }, [sdata,isDragging]);
 
   // 处理画布点击事件
   const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
   // 核心：如果是拖拽产生的多单元格选择，直接拦截点击事件
-  if (isDragSelection) {
-    setIsDragSelection(false); // 重置标记
-    return;
-  }
+    if (isDragSelection) {
+      setIsDragSelection(false); // 重置标记
+      return;
+    }
     const canvas = canvasRef.current;
     if (!canvas || !sdata.length) return;
     
