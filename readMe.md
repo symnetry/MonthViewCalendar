@@ -1,4 +1,8 @@
 # <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">月视图日历组件（MonthViewCalendar）项目介绍与使用指南</font>
+
+
+![预览GIF](./prevview.gif)
+
 ## <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">项目概述</font>
 <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">本项目是一个基于 React 和 Canvas 的月视图日历组件，主要用于酒店、民宿等场景的房间预订状态可视化管理。通过该组件，可直观展示指定日期范围内的房间类型、房间号及对应订单信息，并支持日期切换、订单选中、单元格拖拽选择等交互操作，适合高效管理房间预订情况。</font>
 
@@ -23,16 +27,16 @@
 
 ## <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">MonthViewCalendar 组件使用指南</font>
 ### <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">1. 组件 Props 说明</font>
-| **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">属性名</font>** | **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">类型</font>** | **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">说明</font>** | **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">是否必传</font>** |
-| :--- | :--- | :--- | :--- |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">rooms</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">Room[]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">房间数据数组（包含房间 ID、编号、类型等信息）</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">是</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">orders</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">Order[]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">订单数据数组（包含订单 ID、房间 ID、入住 / 退房时间等信息）</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">是</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">colorScheme</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">ColorScheme</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">配色方案（自定义组件颜色）</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">是</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">defaultDates</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">[Moment, Moment]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">默认显示的日期范围（默认为当月）</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">是</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onDateChange</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(dates: [Moment, Moment]) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">日期范围变化时的回调函数</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">否</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onOrderSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(order: Order) => void</font>` | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">订单被选中时的回调函数</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">否</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onCellSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(cell: CellData) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">单个单元格被选中时的回调函数</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">否</font> |
-| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onMutipleSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(cells: CellData[]) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">拖拽选择多个单元格时的回调函数</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">否</font> |
+| **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">属性名</font>** | **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">类型</font>** | **<font style="color:rgb(0, 0, 0) !important;background-color:rgb(249, 250, 251);">说明</font>** |
+| :--- | :--- | :--- |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">rooms</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">Room[]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">房间数据数组（包含房间 ID、编号、类型等信息）</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">orders</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">Order[]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">订单数据数组（包含订单 ID、房间 ID、入住 / 退房时间等信息）</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">colorScheme</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">ColorScheme</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">配色方案（自定义组件颜色）</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">defaultDates</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">[Moment, Moment]</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">默认显示的日期范围（默认为当月）</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onDateChange</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(dates: [Moment, Moment]) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">日期范围变化时的回调函数</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onOrderSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(order: Order) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">订单被选中时的回调函数</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onCellSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(cell: CellData) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">单个单元格被选中时的回调函数</font> |
+| <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">onMutipleSelect</font> | <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">(cells: CellData[]) => void</font> | <font style="color:rgba(0, 0, 0, 0.85) !important;background-color:rgb(249, 250, 251);">拖拽选择多个单元格时的回调函数</font> |
 
 
 ### <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">2. 数据类型定义</font>
@@ -165,10 +169,10 @@ export default App;
 ```
 
 ## <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">注意事项</font>
-1. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">订单的</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">checkin</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">和</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">checkout</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">需为 Moment 对象，确保日期计算准确</font>
+1. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">订单的</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">checkin</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">和</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">checkout</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">需为 Moment 对象，确保日期计算准确</font>
 2. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">拖拽选择单元格时，若选择区域包含已有订单，会被判定为无效选择</font>
-3. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">如需自定义样式，可通过</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">colorScheme</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">属性修改配色方案</font>
-4. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">组件基于 Canvas 渲染，适合大数据量场景，若需进一步优化性能，可调整</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">canvasConfig</font><font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">中的单元格尺寸参数</font>
+3. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">如需自定义样式，可通过</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">colorScheme</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">属性修改配色方案</font>
+4. <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">组件基于 Canvas 渲染，适合大数据量场景，若需进一步优化性能，可调整</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">canvasConfig</font>**<font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">中的单元格尺寸参数</font>
 
 <font style="color:rgb(0, 0, 0);background-color:rgb(249, 250, 251);">通过以上步骤，即可快速集成月视图日历组件，实现房间预订状态的可视化管理。</font>
 
