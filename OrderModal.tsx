@@ -40,7 +40,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
 }) => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [animatedIdNumber, setAnimatedIdNumber] = useState('');
-  // 使用之前已声明的formRef
+  const formRef = React.useRef<any>();
 
   // 生成符合规则的随机身份证号码
   const generateIdNumber = () => {
@@ -93,7 +93,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
   
   // 从选中单元格中提取房间和日期信息
   useEffect(() => {
-    if (visible && selectedCells.length > 0) {
+    if (visible && selectedCells.length > 0 && formRef.current) {
       // 通过rowIndex确定房间，假设rowIndex与房间数组索引对应
       // 排除第0行（可能是表头）
       const roomIndices = [...new Set(selectedCells
@@ -112,8 +112,11 @@ const OrderModal: React.FC<OrderModalProps> = ({
       const minDate = dates.length > 0 ? dates.reduce((min, current) => current.isBefore(min) ? current : min) : dayjs();
       const maxDate = dates.length > 0 ? dates.reduce((max, current) => current.isAfter(max) ? current : max).add(1, 'day') : dayjs().add(1, 'day');
       
-      // 使用formRef.current?.setFieldsValue可能更合适，但这里简化处理
-      // 在实际使用中，需要通过ProForm的formRef来获取表单实例
+      // 当选中单元格变化时，更新表单值
+      formRef.current.setFieldsValue({
+        roomIds: selectedRoomIds,
+        dateRange: [minDate, maxDate],
+      });
     }
   }, [visible, selectedCells, allRooms]);
   
@@ -152,8 +155,6 @@ const OrderModal: React.FC<OrderModalProps> = ({
       return false;
     }
   };
-  
-  const formRef = React.useRef<any>();
 
   // 初始值生成函数
   const getInitialValues = () => {

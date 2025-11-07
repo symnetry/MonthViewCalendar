@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Descriptions, Tag } from 'antd';
+import { Modal, Descriptions, Tag, Button } from 'antd';
 import { Order } from './types';
 import { getPlatformName, getOrderColor } from './utils/utils';
 import dayjs from 'dayjs';
@@ -8,9 +8,10 @@ interface OrderDetailModalProps {
   visible: boolean;
   order: Order | null;
   onCancel: () => void;
+  onDelete: () => void;
 }
 
-const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ visible, order, onCancel }) => {
+const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ visible, order, onCancel, onDelete }) => {
   if (!order) return null;
 
   // 使用utils中已有的getOrderColor函数获取平台颜色
@@ -21,7 +22,12 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ visible, order, onC
       title="订单详情"
       open={visible}
       onCancel={onCancel}
-      footer={null}
+      footer={[
+        <Button key="cancel" onClick={onCancel}>取消</Button>,
+        <Button key="delete" danger onClick={onDelete}>
+          删除订单
+        </Button>
+      ]}
       width={500}
     >
       <Descriptions column={1} bordered>

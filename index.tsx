@@ -93,6 +93,18 @@ const Moonview = () => {
     );
     message.success('订单已成功移动');
   };
+  
+  // 处理订单删除
+  const handleOrderDelete = () => {
+    if (selectedOrder) {
+      setOrders(prevOrders => 
+        prevOrders.filter(order => order.id !== selectedOrder.id)
+      );
+      message.success('订单已成功删除');
+      setIsDetailModalVisible(false);
+      setSelectedOrder(null);
+    }
+  };
 
   return (
     <div >
@@ -124,6 +136,7 @@ const Moonview = () => {
         visible={isDetailModalVisible}
         order={selectedOrder}
         onCancel={handleDetailModalCancel}
+        onDelete={handleOrderDelete}
       />
     </div>
   );
