@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { Modal, message } from 'antd';
+import React, { useEffect, useState, useRef } from 'react';
+import { Modal, message, Button } from 'antd';
 import { ProForm, ProFormText, ProFormSelect, ProFormDateRangePicker, ProFormDigit } from '@ant-design/pro-components';
 import { CellData, Order, Room } from './types';
 import dayjs from 'dayjs';
 import { checkOrderConflict } from './utils/orderUtils';
 import { otaPlatformEnum } from './utils/utils';
+
 
 // 订单表单数据类型
 interface OrderFormData {
@@ -16,6 +17,7 @@ interface OrderFormData {
   platform: number;
   notes?: string;
   ordername?: string;
+  idNumber?: string; // 身份证号码
 }
 
 // 模态框Props接口
@@ -36,6 +38,47 @@ const OrderModal: React.FC<OrderModalProps> = ({
   onCancel,
   onConfirm,
 }) => {
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [animatedIdNumber, setAnimatedIdNumber] = useState('');
+  // 使用之前已声明的formRef
+
+  // 生成符合规则的随机身份证号码
+  const generateIdNumber = () => {
+    // 前6位：地区代码（这里使用110101代表北京）
+    const areaCode = '110101';
+    // 中间8位：出生日期（随机生成1950-2005年的日期）
+    const year = Math.floor(Math.random() * 56) + 1950;
+    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+    const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0');
+    const birthday = `${year}${month}${day}`;
+    // 后4位：顺序码和校验码（这里简化处理）
+    const sequence = String(Math.floor(Math.random() * 999) + 1).padStart(3, '0');
+    // 简单的校验码生成（实际校验码算法更复杂）
+    const checkCode = '0123456789X'.charAt(Math.floor(Math.random() * 11));
+    
+    return `${areaCode}${birthday}${sequence}${checkCode}`;
+  };
+
+  // 处理录入身份证号码
+  const handleIdNumberInput = () => {
+    const idNumber = generateIdNumber();
+    setAnimatedIdNumber(idNumber);
+    setShowAnimation(true);
+    
+    // 使用formRef设置表单值
+    setTimeout(() => {
+      if (formRef.current) {
+        formRef.current.setFieldsValue({ idNumber });
+      }
+    }, 500); // 动画播放后设置值
+  };
+
+  // 重置动画状态
+  useEffect(() => {
+    if (!visible) {
+      setShowAnimation(false);
+    }
+  }, [visible]);
   // 从OTA平台配置获取选项
   const platformOptions = otaPlatformEnum.map(platform => ({
     label: platform.label,
@@ -99,6 +142,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
         checkout: dateRange[1],
         netaboutplatform: values.platform,
         ordername: values.ordername || values.name,
+        idNumber: values.idNumber,
       }));
       
       onConfirm(newOrders);
@@ -109,6 +153,8 @@ const OrderModal: React.FC<OrderModalProps> = ({
     }
   };
   
+  const formRef = React.useRef<any>();
+
   // 初始值生成函数
   const getInitialValues = () => {
     if (!visible || selectedCells.length === 0) return {};
@@ -150,6 +196,7 @@ const OrderModal: React.FC<OrderModalProps> = ({
         layout="vertical"
         onFinish={handleSubmit}
         initialValues={getInitialValues()}
+        formRef={formRef}
 
       >
         <ProFormText
@@ -211,6 +258,28 @@ const OrderModal: React.FC<OrderModalProps> = ({
           label="订单名称（选填）"
           placeholder="默认使用客户姓名作为订单名称"
         />
+        
+        <div style={{ marginBottom: 16 }}>
+          <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>身份证号码</label>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <ProFormText
+              name="idNumber"
+              placeholder="请输入身份证号码"
+              fieldProps={{
+                style: { flex: 1 },
+                maxLength: 18
+              }}
+            />
+            <Button
+              type="primary"
+              onClick={handleIdNumberInput}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              录入
+            </Button>
+          </div>
+          
+        </div>
         
         <ProFormText
           name="notes"

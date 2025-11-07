@@ -16,6 +16,7 @@ export interface Order {
 	checkout: dayjs.Dayjs;
 	netaboutplatform: number;
 	ordername?: string;
+	idNumber?: string; // 身份证号码
 }
 
 // 单元格数据类型
@@ -56,6 +57,7 @@ export interface CellData {
 		checkout: dayjs.Dayjs;
 		netaboutplatform: number;
 		ordername?: string;
+		idNumber?: string; // 身份证号码
 	};
 	colSpan?: number;
 	rowSpan?: number;

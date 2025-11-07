@@ -18,7 +18,8 @@ export const mockOrders: Order[] = [
     checkin: dayjs().add(1, 'day'),
     checkout: dayjs().add(3, 'day'), // 跨2天（1-3日，共2晚）
     netaboutplatform: 1,
-    ordername: '张三'
+    ordername: '张三',
+    idNumber: '110101199001011234'
   },
   {
     id: 'order2',
@@ -26,7 +27,8 @@ export const mockOrders: Order[] = [
     checkin: dayjs().add(2, 'day'),
     checkout: dayjs().add(5, 'day'), // 跨3天（2-5日，共3晚）
     netaboutplatform: 2,
-    ordername: '李四'
+    ordername: '李四',
+    idNumber: '110101199203042345'
   },
   {
     id: 'order3',
@@ -34,6 +36,7 @@ export const mockOrders: Order[] = [
     checkin: dayjs().add(4, 'day'),
     checkout: dayjs().add(6, 'day'), // 跨2天（4-6日，共2晚）
     netaboutplatform: 3,
-    ordername: '王五'
+    ordername: '王五',
+    idNumber: '110101198805063456'
   },
 ];

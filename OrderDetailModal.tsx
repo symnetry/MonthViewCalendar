@@ -42,6 +42,9 @@ const OrderDetailModal: React.FC<OrderDetailModalProps> = ({ visible, order, onC
         <Descriptions.Item label="入住天数">
           {order.checkout.diff(order.checkin, 'days')} 天
         </Descriptions.Item>
+        <Descriptions.Item label="身份证号码">
+          {order.idNumber || '未填写'}
+        </Descriptions.Item>
       </Descriptions>
     </Modal>
   );
