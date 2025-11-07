@@ -376,6 +376,13 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 		[isDragging, dragStart, sdata, draggingOrder, hoverInfo, colorScheme]
 	);
 
+	// 计算拖拽移动的距离的通用函数
+	const calculateDragDistance = useCallback((startX: number, startY: number, endX: number, endY: number) => {
+		const dx = Math.abs(endX - startX);
+		const dy = Math.abs(endY - startY);
+		return Math.sqrt(dx * dx + dy * dy);
+	}, []);
+
 	// 处理订单拖拽结束
   const handleOrderDragEnd = () => {
     // 如果没有正在拖拽的订单或必要参数，直接返回
@@ -403,9 +410,7 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
     }
     console.log('目标单元格',cell)
     // 计算拖拽距离
-    const dx = Math.abs(dragEnd.x - dragStart.x);
-    const dy = Math.abs(dragEnd.y - dragStart.y);
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const distance = calculateDragDistance(dragStart.x, dragStart.y, dragEnd.x, dragEnd.y);
     
     // 如果拖拽距离过小，视为未拖拽
     if (distance < canvasConfig.dragThreshold) {
@@ -475,11 +480,13 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
     
     // 触发订单更新回调（如果存在）
     if (onOrderUpdate) {
+      setHasDragConflict(true);
       onOrderUpdate(updatedOrder);
+      return true
     }
     
     // 重置冲突标记（如果之前被设置过）
-    setHasDragConflict(false);
+    // setHasDragConflict(false);
     
     return true;
   };
@@ -511,9 +518,7 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 		}
 
 		// 计算拖拽移动的距离
-		const dx = Math.abs(dragEnd.x - dragStart.x);
-		const dy = Math.abs(dragEnd.y - dragStart.y);
-		const distance = Math.sqrt(dx * dx + dy * dy);
+		const distance = calculateDragDistance(dragStart.x, dragStart.y, dragEnd.x, dragEnd.y);
 		let isEffectiveDrag 
 
 		// 判断是否超过拖拽阈值
@@ -577,7 +582,7 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
     });
     
     return hasOverlap;
-  }, []); // 修复依赖项错误
+  }, []); 
 
   return (
     <div style={{ position: 'relative', border: '1px solid #ccc', borderRadius: 4,overflowX:"scroll" }}>
