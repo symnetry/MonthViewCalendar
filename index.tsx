@@ -18,28 +18,15 @@ const Moonview = () => {
   ];
   
   // 使用localStorage管理数据
-  // 优先从localStorage读取，如果没有则使用mock数据并保存到localStorage
+  // 直接使用mock数据作为初始值，useLocalStorage钩子会自动处理localStorage的读取和日期转换
   const [rooms, setRooms] = useLocalStorage<Room[]>('moonview_rooms', mockRooms);
   const [orders, setOrders] = useLocalStorage<Order[]>('moonview_orders', mockOrders);
-
-  // 确保数据正确加载并保存到localStorage
-  useEffect(() => {
-    // 如果localStorage中没有数据，保存mock数据
-    const savedRooms = localStorage.getItem('moonview_rooms');
-    const savedOrders = localStorage.getItem('moonview_orders');
-    
-    if (!savedRooms && rooms.length > 0) {
-      localStorage.setItem('moonview_rooms', JSON.stringify(rooms));
-    }
-    
-    if (!savedOrders && orders.length > 0) {
-      localStorage.setItem('moonview_orders', JSON.stringify(orders));
-    }
-  }, []); // 仅在组件挂载时执行一次
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCells, setSelectedCells] = useState<CellData[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+
+  console.log(orders)
 
   const handleDateChange = (dates: [dayjs.Dayjs, dayjs.Dayjs]) => {
     console.log('日期范围变化:', dates);

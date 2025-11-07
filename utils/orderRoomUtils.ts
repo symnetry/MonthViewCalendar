@@ -78,7 +78,7 @@ export const matchOrdersToCells = (
     const rowIndex = roomIndexMap.get(order.roomId);
     if (rowIndex === undefined) return;
 
-    // 使用Order接口中定义的正确属性名
+    // 确保日期字段是dayjs对象，即使它们是ISO字符串格式
     const orderCheckIn = order.checkin.startOf('day');
     const orderCheckOut = order.checkout.startOf('day');
     

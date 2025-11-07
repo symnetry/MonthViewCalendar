@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 
 // 尝试导入全局的useLocalStorage实现
 let globalUseLocalStorage: any = null;
@@ -7,6 +8,24 @@ try {
 } catch (error) {
   console.log('未找到全局useLocalStorage实现，使用本地实现');
 }
+
+// 判断是否为订单数据的函数
+const isOrderData = (key: string, data: any): boolean => {
+  return key === 'moonview_orders' && 
+         Array.isArray(data) && 
+         data.length > 0 && 
+         'checkin' in data[0] && 
+         'checkout' in data[0];
+};
+
+// 转换订单数据中的日期字段为dayjs对象
+const convertOrderDates = (data: any[]): any[] => {
+  return data.map(item => ({
+    ...item,
+    checkin: dayjs(item.checkin),
+    checkout: dayjs(item.checkout)
+  }));
+};
 
 /**
  * localStorage操作的React自定义钩子
@@ -28,7 +47,16 @@ export function useLocalStorage<T>(
   const readValue = (): T => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? (JSON.parse(item) as T) : initialValue;
+      if (!item) return initialValue;
+      
+      const parsedData = JSON.parse(item);
+      
+      // 特殊处理订单数据，确保日期字段为dayjs对象
+      if (isOrderData(key, parsedData)) {
+        return convertOrderDates(parsedData) as unknown as T;
+      }
+      
+      return parsedData as T;
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
       return initialValue;
@@ -44,6 +72,7 @@ export function useLocalStorage<T>(
       
       setStoredValue(valueToStore);
       
+      // 保存时不需要特殊处理，JSON.stringify会自动处理
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
       
       // 触发storage事件以通知其他标签页
@@ -88,7 +117,18 @@ export function useLocalStorage<T>(
   useEffect(() => {
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === key && event.newValue !== null) {
-        setStoredValue(JSON.parse(event.newValue) as T);
+        try {
+          const parsedData = JSON.parse(event.newValue);
+          
+          // 特殊处理订单数据，确保日期字段为dayjs对象
+          if (isOrderData(key, parsedData)) {
+            setStoredValue(convertOrderDates(parsedData) as unknown as T);
+          } else {
+            setStoredValue(parsedData as T);
+          }
+        } catch (error) {
+          console.warn(`Error parsing localStorage data for key "${key}":`, error);
+        }
       } else if (event.key === key && event.newValue === null) {
         setStoredValue(initialValue);
       }
