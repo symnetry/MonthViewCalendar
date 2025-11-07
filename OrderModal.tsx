@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, DatePicker, InputNumber, message } from 'antd';
+import React, { useEffect } from 'react';
+import { Modal, message } from 'antd';
+import { ProForm, ProFormText, ProFormSelect, ProFormDateRangePicker, ProFormDigit } from '@ant-design/pro-components';
 import { CellData, Order, Room } from './types';
 import dayjs from 'dayjs';
 import { checkOrderConflict } from './utils/orderUtils';
-
-// console.dir(moment)
-const { Option } = Select;
-const { RangePicker } = DatePicker;
+import { otaPlatformEnum } from './utils/utils';
 
 // 订单表单数据类型
 interface OrderFormData {
@@ -38,79 +36,106 @@ const OrderModal: React.FC<OrderModalProps> = ({
   onCancel,
   onConfirm,
 }) => {
-  const [form] = Form.useForm<OrderFormData>();
-  const [loading, setLoading] = useState(false);
+  // 从OTA平台配置获取选项
+  const platformOptions = otaPlatformEnum.map(platform => ({
+    label: platform.label,
+    value: platform.value,
+  }));
+  
+  // 从房间数据获取选项
+  const roomOptions = allRooms.map(room => ({
+    label: `${room.roomno} (${room.roomtype})`,
+    value: room.id,
+  }));
   
   // 从选中单元格中提取房间和日期信息
   useEffect(() => {
     if (visible && selectedCells.length > 0) {
-      // 提取选中的房间IDs（通过rowIndex确定）
-      console.log('所有房间:', allRooms);
-      console.log('选中的单元格:', selectedCells);
-      
       // 通过rowIndex确定房间，假设rowIndex与房间数组索引对应
       // 排除第0行（可能是表头）
       const roomIndices = [...new Set(selectedCells
         .filter(cell => typeof cell.rowIndex === 'number' && cell.rowIndex > 0)
         .map(cell => cell.rowIndex - 1))]; // 减去1得到房间数组的索引
       
-      console.log('房间索引:', roomIndices);
       const selectedRoomIds = roomIndices
         .filter(index => index >= 0 && index < allRooms.length)
         .map(index => allRooms[index].id);
-      
-      console.log('选中的房间IDs:', selectedRoomIds);
       
       // 提取选中的日期范围
       const dates = selectedCells
         .filter(cell => cell.fullDate)
         .map(cell => dayjs(cell.fullDate));
-
-        console.log('选中的日期范围:', dates);
       
       const minDate = dates.length > 0 ? dates.reduce((min, current) => current.isBefore(min) ? current : min) : dayjs();
       const maxDate = dates.length > 0 ? dates.reduce((max, current) => current.isAfter(max) ? current : max).add(1, 'day') : dayjs().add(1, 'day');
       
-      // 设置表单初始值
-      form.setFieldsValue({
-        roomIds: selectedRoomIds,
-        dateRange: [minDate, maxDate],
-        price: 0,
-        platform: 1,
-      });
+      // 使用formRef.current?.setFieldsValue可能更合适，但这里简化处理
+      // 在实际使用中，需要通过ProForm的formRef来获取表单实例
     }
-  }, [visible, selectedCells, allRooms, form]);
+  }, [visible, selectedCells, allRooms]);
   
   // 处理表单提交
-  const handleSubmit = async () => {
+  const handleSubmit = async (values: OrderFormData) => {
     try {
-      const values = await form.validateFields();
-      setLoading(true);
+      // 确保日期范围是dayjs对象
+      const [checkin, checkout] = values.dateRange;
+      const dateRange = [
+        typeof checkin === 'string' ? dayjs(checkin) : checkin,
+        typeof checkout === 'string' ? dayjs(checkout) : checkout
+      ] as [dayjs.Dayjs, dayjs.Dayjs];
       
       // 检查订单冲突
-      const conflicts = checkOrderConflict(values.roomIds, values.dateRange, existingOrders);
+      const conflicts = checkOrderConflict(values.roomIds, dateRange, existingOrders);
       if (conflicts.length > 0) {
         message.error(`检测到${conflicts.length}个房间在所选时间内已有订单，请重新选择`);
-        return;
+        return false;
       }
       
       // 创建新订单
       const newOrders: Order[] = values.roomIds.map((roomId, index) => ({
         id: `order_${Date.now()}_${index}`,
         roomId,
-        checkin: values.dateRange[0],
-        checkout: values.dateRange[1],
+        checkin: dateRange[0],
+        checkout: dateRange[1],
         netaboutplatform: values.platform,
         ordername: values.ordername || values.name,
       }));
       
       onConfirm(newOrders);
-      form.resetFields();
+      return true;
     } catch (error) {
-      console.error('表单验证失败:', error);
-    } finally {
-      setLoading(false);
+      console.error('表单提交失败:', error);
+      return false;
     }
+  };
+  
+  // 初始值生成函数
+  const getInitialValues = () => {
+    if (!visible || selectedCells.length === 0) return {};
+    
+    // 提取选中的房间IDs
+    const roomIndices = [...new Set(selectedCells
+      .filter(cell => typeof cell.rowIndex === 'number' && cell.rowIndex > 0)
+      .map(cell => cell.rowIndex - 1))];
+    
+    const selectedRoomIds = roomIndices
+      .filter(index => index >= 0 && index < allRooms.length)
+      .map(index => allRooms[index].id);
+    
+    // 提取选中的日期范围
+    const dates = selectedCells
+      .filter(cell => cell.fullDate)
+      .map(cell => dayjs(cell.fullDate));
+    
+    const minDate = dates.length > 0 ? dates.reduce((min, current) => current.isBefore(min) ? current : min) : dayjs();
+    const maxDate = dates.length > 0 ? dates.reduce((max, current) => current.isAfter(max) ? current : max).add(1, 'day') : dayjs().add(1, 'day');
+    
+    return {
+      roomIds: selectedRoomIds,
+      dateRange: [minDate, maxDate],
+      price: 0,
+      platform: 1,
+    };
   };
   
   return (
@@ -118,100 +143,84 @@ const OrderModal: React.FC<OrderModalProps> = ({
       title="创建订单"
       open={visible}
       onCancel={onCancel}
-      onOk={handleSubmit}
-      loading={loading}
+      footer={null} // 禁用默认的footer，由ProForm提供
       width={700}
     >
-      <Form
-        form={form}
+      <ProForm
         layout="vertical"
+        onFinish={handleSubmit}
+        initialValues={getInitialValues()}
+
       >
-        <Form.Item
+        <ProFormText
           name="name"
           label="客户姓名"
+          placeholder="请输入客户姓名"
           rules={[{ required: true, message: '请输入客户姓名' }]}
-        >
-          <Input placeholder="请输入客户姓名" />
-        </Form.Item>
+        />
         
-        <Form.Item
+        <ProFormText
           name="phone"
           label="手机号码"
+          placeholder="请输入手机号码"
           rules={[
             { required: true, message: '请输入手机号码' },
             { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码' }
           ]}
-        >
-          <Input placeholder="请输入手机号码" />
-        </Form.Item>
+        />
         
-        <Form.Item
+        <ProFormSelect
           name="roomIds"
           label="房间选择"
+          placeholder="请选择房间"
+          mode="multiple"
+          options={roomOptions}
           rules={[{ required: true, message: '请选择房间' }]}
-        >
-          <Select mode="multiple" placeholder="请选择房间">
-            {allRooms.map(room => (
-              <Option key={room.id} value={room.id}>
-                {room.roomno} ({room.roomtype})
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
+        />
         
-        <Form.Item
+        <ProFormDateRangePicker
           name="dateRange"
           label="入住日期范围"
+          placeholder={['入住日期', '退房日期']}
+          disabledDate={(current) => current && current < dayjs().startOf('day')}
           rules={[{ required: true, message: '请选择入住日期范围' }]}
-        >
-          <RangePicker
-            style={{ width: '100%' }}
-            placeholder={['入住日期', '退房日期']}
-            disabledDate={(current) => current && current < dayjs().startOf('day')}
-          />
-        </Form.Item>
+          fieldProps={{
+            style: { width: '100%' },
+          }}
+        />
         
-        <Form.Item
+        <ProFormDigit
           name="price"
           label="房费"
+          placeholder="请输入房费"
+          addonAfter="元"
+          min={0}
           rules={[{ required: true, message: '请输入房费' }]}
-        >
-          <InputNumber
-            style={{ width: '100%' }}
-            placeholder="请输入房费"
-            addonAfter="元"
-            min={0}
-          />
-        </Form.Item>
+        />
         
-        <Form.Item
+        <ProFormSelect
           name="platform"
           label="预订渠道"
+          placeholder="请选择预订渠道"
+          options={platformOptions}
           rules={[{ required: true, message: '请选择预订渠道' }]}
-        >
-          <Select placeholder="请选择预订渠道">
-            <Option value={1}>携程</Option>
-            <Option value={2}>美团</Option>
-            <Option value={3}>飞猪</Option>
-            <Option value={4}>酒店官网</Option>
-            <Option value={5}>电话预订</Option>
-          </Select>
-        </Form.Item>
+        />
         
-        <Form.Item
+        <ProFormText
           name="ordername"
           label="订单名称（选填）"
-        >
-          <Input placeholder="默认使用客户姓名作为订单名称" />
-        </Form.Item>
+          placeholder="默认使用客户姓名作为订单名称"
+        />
         
-        <Form.Item
+        <ProFormText
           name="notes"
           label="备注信息（选填）"
-        >
-          <Input.TextArea rows={3} placeholder="请输入备注信息" />
-        </Form.Item>
-      </Form>
+          placeholder="请输入备注信息"
+          fieldProps={{
+            rows: 3,
+          }}
+        />
+      </ProForm>
     </Modal>
   );
 };

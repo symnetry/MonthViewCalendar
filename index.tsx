@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import MonthViewCalendar from './MonthViewCalendar';
 import OrderModal from './OrderModal';
+import OrderDetailModal from './OrderDetailModal';
 import dayjs from 'dayjs';
 import { CellData, Order, Room } from './types';
 import { colorScheme } from './constants'; //配色方案
@@ -20,6 +21,8 @@ const Moonview = () => {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCells, setSelectedCells] = useState<CellData[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
   const handleDateChange = (dates: [dayjs.Dayjs, dayjs.Dayjs]) => {
     console.log('日期范围变化:', dates);
@@ -27,6 +30,9 @@ const Moonview = () => {
 
   const handleOrderSelect = (order: Order) => {
     console.log('选中订单:', order);
+    
+    setSelectedOrder(order);
+    setIsDetailModalVisible(true);
   };
 
   const handleCellSelect = (cell: CellData) => {
@@ -67,6 +73,12 @@ const Moonview = () => {
     setIsModalVisible(false);
     setSelectedCells([]);
   };
+
+  // 处理详情模态框取消
+  const handleDetailModalCancel = () => {
+    setIsDetailModalVisible(false);
+    setSelectedOrder(null);
+  };
   
   // 处理订单更新（拖拽移动订单）
   const handleOrderUpdate = (updatedOrder: Order) => {
@@ -101,6 +113,13 @@ const Moonview = () => {
         existingOrders={orders}
         onCancel={handleModalCancel}
         onConfirm={handleOrderCreate}
+      />
+      
+      {/* 订单详情模态框 */}
+      <OrderDetailModal
+        visible={isDetailModalVisible}
+        order={selectedOrder}
+        onCancel={handleDetailModalCancel}
       />
     </div>
   );

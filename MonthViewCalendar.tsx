@@ -295,6 +295,8 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
 				// 计算当前单元格的左上角坐标
 				const targetX = cell.colIndex * (cellWidth + spacing) + spacing;
 				const targetY = rowIndex * (cellHeight + spacing) + spacing;
+
+				console.log('targetX=>',targetX,'targetY',targetY)
 				
 				// 计算鼠标相对于起始点的偏移
 				const deltaX = mouseX - dragStart.x;
@@ -586,6 +588,8 @@ const MonthViewCalendar: React.FC<MonthViewCalendarProps> = ({
           onChange={handleRangeChange}
           format="YYYY-MM-DD"
           placeholder={['开始日期', '结束日期']}
+          theme="dark"
+          style={{ backgroundColor: '#1f1f1f', color: '#fff' }}
         />
       </div>
 

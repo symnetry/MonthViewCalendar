@@ -94,7 +94,13 @@ export const colorScheme = {
     order: {
       ctrip: '#b8860b',
       meituan: '#daa520',
-      fliggy: '#f0e68c'
+      fliggy: '#f0e68c',
+      hotel: '#c0c0c0',
+      phone: '#808000',
+      tujia: '#cd853f',
+      airbnb: '#a9a9a9',
+      xiaozhu: '#d2b48c',
+      ziru: '#bc8f8f'
     }
   };
 
