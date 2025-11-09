@@ -1,11 +1,7 @@
-import {
-  LogoutOutlined,
-  SettingOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { ClearOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { history, useModel } from '@umijs/max';
 import type { MenuProps } from 'antd';
-import { Spin } from 'antd';
+import { Modal, Spin } from 'antd';
 import { createStyles } from 'antd-style';
 import React from 'react';
 import { flushSync } from 'react-dom';
@@ -49,7 +45,7 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
    * 退出登录，并且将当前的 url 保存
    */
   const loginOut = async () => {
-    await outLogin();
+    // await outLogin();
     const { search, pathname } = window.location;
     const urlParams = new URL(window.location.href).searchParams;
     const searchParams = new URLSearchParams({
@@ -69,6 +65,29 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
 
   const { initialState, setInitialState } = useModel('@@initialState');
 
+  // 清空缓存功能
+  const handleClearCache = () => {
+    Modal.confirm({
+      title: '确认清空缓存',
+      content: '此操作将清空本地存储的所有数据，包括房间和订单信息。确定要继续吗？',
+      okText: '确定',
+      cancelText: '取消',
+      onOk: () => {
+        // 清空localStorage
+        localStorage.clear();
+        // 提示用户缓存已清空
+        Modal.success({
+          title: '缓存已清空',
+          content: '所有本地数据已清除，页面将重新加载。',
+          onOk: () => {
+            // 重新加载页面以重置状态
+            window.location.reload();
+          },
+        });
+      },
+    });
+  };
+
   const onMenuClick: MenuProps['onClick'] = (event) => {
     const { key } = event;
     if (key === 'logout') {
@@ -76,6 +95,10 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
         setInitialState((s) => ({ ...s, currentUser: undefined }));
       });
       loginOut();
+      return;
+    }
+    if (key === 'clearCache') {
+      handleClearCache();
       return;
     }
     history.push(`/account/${key}`);
@@ -118,6 +141,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({
           },
           {
             type: 'divider' as const,
+          },
+          {
+            key: 'clearCache',
+            icon: <ClearOutlined />,
+            label: '清空缓存',
           },
         ]
       : []),

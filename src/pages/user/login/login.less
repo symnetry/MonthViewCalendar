@@ -1,0 +1,180 @@
+@resources-path: '../../../resources';
+
+@font-face {
+    font-family: 'YuMincho';
+    src: url('@{resources-path}/YouMingChaoTi-Medium-2.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap; /* 优化字体加载显示 */
+}
+/* 全局样式重置 */
+.login-page {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* Internet Explorer */
+  user-select: none; /* Standard syntax */
+  /* 登录页容器样式 */
+  .login-container {
+    min-height: 100vh;
+    background: #000000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 登录表单样式 */
+  .login-form {
+    background-color: rgba(15, 15, 15, 0.9);
+    position: relative;
+    z-index: 1;
+    box-shadow: 2px 0 20px rgba(255, 0, 0, 0.3);
+  }
+
+  /* 右侧面板样式 */
+  .right-panel {
+    position: relative;
+    overflow: hidden;
+    background-color: transparent;
+    z-index: 1;
+    height: 100%;
+  }
+
+  /* 表单标签样式 */
+  .ant-form-item-label > label {
+    color: #ffffff !important;
+    font-size: 12px !important;
+    font-family: "YuMincho", serif !important;
+    opacity: 0.8;
+    font-weight: normal !important;
+  }
+  
+  /* 输入框前缀样式 */
+  .ant-input-affix-wrapper .ant-input-prefix {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  /* 输入框聚焦动画效果 */
+  .ant-input:focus,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper-focused {
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
+  }
+  
+  /* 错误信息样式 */
+  .ant-form-item-explain-error {
+    color: #ff0000 !important;
+    font-size: 11px !important;
+    font-family: "YuMincho", serif !important;
+  }
+
+  /* 按钮样式 */
+  .login-button {
+    background-color: rgba(255, 0, 0, 0.8);
+    border: 1px solid transparent;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "YuMincho", serif;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:active {
+      background-color: rgba(255, 0, 0, 0.9);
+      border-color: #ff0000;
+      color: #ffffff;
+    }
+    
+    /* 鼠标悬停效果 */
+    &:hover {
+      border-color: #ff0000;
+      boxShadow: 0 0 15px rgba(255, 0, 0, 0.5);
+      color: #ffffff;
+    }
+    
+    /* 白光斜着扫过效果 */
+    &:hover::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        -45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%
+      );
+      animation: sweepLight 1.5s ease-in-out forwards;
+    }
+  }
+  
+  @keyframes sweepLight {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+      opacity: 1;
+    }
+    90% {
+      transform: translateX(100%) translateY(100%) rotate(-45deg);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(-45deg);
+      opacity: 0;
+    }
+  }
+
+  /* 输入框样式 */
+  .login-input {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 0;
+    font-family: "YuMincho", serif;
+    font-size: 14;
+    transition: all 0.3s ease;
+  }
+
+  /* Logo样式 */
+  .login-logo {
+    color: #ffffff;
+    font-size: 36;
+    font-weight: normal;
+    font-family: "YuMincho", serif;
+    position: relative;
+  }
+
+  /* Logo副标题样式 */
+  .login-logo-subtitle {
+    color: #ff0000;
+    font-size: 14;
+    margin-top: 10;
+    font-family: "YuMincho", serif;
+    opacity: 0.8;
+  }
+
+  /* 面板标题样式 */
+  .login-panel-title {
+    color: #ffffff;
+    font-size: 18;
+    font-weight: normal;
+    font-family: "YuMincho", serif;
+  }
+
+  /* 标签样式 */
+  .login-label {
+    color: #ffffff !important;
+    font-size: 12;
+    font-family: "YuMincho", serif;
+    opacity: 0.8;
+  }
+
+  /* 错误提示样式 */
+  .login-alert-message {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 0, 0, 0.3) !important;
+    color: #ff0000 !important;
+    border-radius: 0;
+    font-family: "YuMincho", serif;
+  }
+}

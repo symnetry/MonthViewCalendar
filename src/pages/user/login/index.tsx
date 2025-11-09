@@ -19,27 +19,26 @@ import { Alert, App } from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
-import { Footer } from '@/components';
+// import { Footer } from '@/components';
+import StarFieldCanvas from '@/components/StarFieldCanvas';
 import { login } from '@/services/ant-design-pro/api';
 import Settings from '../../../../config/defaultSettings';
-import logoUrl from '@r/images/logo.svg';
-import bg from '@r/images/background.jpg';
-
-
-// import fjson from '@assets/f.json'
-// import fjson from '@/assets/f.json'
-// import fjson from '../../../assets/f.json';
-
+import backgroundImage from '@r/images/background.jpg';
+import './login.less';
 // console.log(logoUrl)
 
 const useStyles = createStyles(({ token }) => {
   return {
     container: {
       display: 'grid',
-      gridTemplateColumns: '600px 1fr',
+      gridTemplateColumns: '500px 1fr',
       height: '100vh',
       overflow: 'hidden',
-      backgroundColor: '#141414',
+      backgroundColor: '#000000',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
     },
     leftPanel: {
       display: 'flex',
@@ -47,28 +46,19 @@ const useStyles = createStyles(({ token }) => {
       justifyContent: 'center',
       alignItems: 'center',
       padding: '40px',
-      backgroundColor: 'rgba(0, 0, 0, 0.65)',
-      position: 'relative',
+      backgroundColor: 'rgba(15, 15, 15, 0.9)',
+        position: 'relative',
+        zIndex: 1,
+        boxShadow: '2px 0 20px rgba(255, 0, 0, 0.3)',
     },
     rightPanel: {
-      position: 'relative',
-      overflow: 'hidden',
-      backgroundImage: `url(${bg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    },
-    videoBg: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      minWidth: '100%',
-      minHeight: '100%',
-      width: 'auto',
-      height: 'auto',
-      transform: 'translate(-50%, -50%)',
-      objectFit: 'cover',
-    },
+        position: 'relative',
+        overflow: 'hidden',
+        backgroundColor: 'transparent',
+        zIndex: 1,
+        // 右侧面板放置canvas
+        height: '100%',
+      },
     lang: {
       width: 42,
       height: 42,
@@ -77,23 +67,136 @@ const useStyles = createStyles(({ token }) => {
       top: 16,
       right: 16,
       borderRadius: token.borderRadius,
-      color: token.colorWhite,
+      color: '#ffffff',
       ':hover': {
         backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 0 10px rgba(255, 0, 0, 0.5)',
       },
     },
     loginForm: {
       width: '100%',
-      maxWidth: 400,
+      maxWidth: 360,
     },
-    logo: {
+    logoContainer: {
       marginBottom: 40,
       display: 'flex',
+      flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      color: token.colorPrimary,
-      fontSize: 24,
-      fontWeight: 'bold',
+    },
+    logo: {
+      color: '#ffffff',
+      fontSize: 36,
+      fontWeight: 'normal',
+      fontFamily: '"YuMincho", serif',
+      position: 'relative',
+    },
+    logoSubtitle: {
+      color: '#ff0000',
+      fontSize: 14,
+      marginTop: 10,
+      fontFamily: '"YuMincho", serif',
+      opacity: 0.8,
+    },
+    // EVA风格面板
+    controlPanel: {
+      position: 'relative',
+      width: '100%',
+      padding: '40px',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      overflow: 'hidden',
+    },
+    panelHeader: {
+      marginBottom: 30,
+      textAlign: 'center',
+    },
+    panelTitle: {
+        color: '#ffffff',
+        fontSize: 18,
+        fontWeight: 'normal',
+        fontFamily: '"YuMincho", serif',
+      },
+    // EVA风格分割线
+    divider: {
+      height: 1,
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      margin: '30px 0',
+      position: 'relative',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '20%',
+        height: 3,
+        backgroundColor: '#ff0000',
+      },
+    },
+    // EVA风格按钮
+    button: {
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+        border: '1px solid #ffffff',
+        color: '#ffffff',
+        fontSize: 14,
+        fontFamily: '"YuMincho", serif',
+      transition: 'all 0.3s ease',
+      ':hover': {
+        backgroundColor: 'rgba(255, 0, 0, 0.8)',
+        borderColor: '#ff0000',
+        boxShadow: '0 0 15px rgba(255, 0, 0, 0.5)',
+      },
+      ':active': {
+        boxShadow: '0 0 5px rgba(255, 0, 0, 0.5) inset',
+      },
+    },
+    // EVA风格输入框
+    input: {
+        backgroundColor: 'rgba(0, 0, 0, 0.7) !important',
+        border: '1px solid rgba(255, 255, 255, 0.2) !important',
+        color: '#ffffff !important',
+        borderRadius: 0,
+        fontFamily: '"YuMincho", serif',
+        fontSize: 14,
+      transition: 'all 0.3s ease',
+      ':focus': {
+        borderColor: '#ff0000 !important',
+        boxShadow: '0 0 10px rgba(255, 0, 0, 0.3) !important',
+      },
+    },
+    // EVA风格标签
+    label: {
+        color: '#ffffff !important',
+        fontSize: 12,
+        fontFamily: '"YuMincho", serif',
+        opacity: 0.8,
+      },
+    // EVA风格输入框前缀
+    inputPrefix: {
+      color: 'rgba(255, 255, 255, 0.5) !important',
+    },
+    // 错误提示样式
+    alertMessage: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8) !important',
+        border: '1px solid rgba(255, 0, 0, 0.3) !important',
+        color: '#ff0000 !important',
+        borderRadius: 0,
+        fontFamily: '"YuMincho", serif',
+      },
+    // 装饰性网格线
+    gridOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)`,
+      backgroundSize: '20px 20px',
+      pointerEvents: 'none',
+      zIndex: 0,
     },
   };
 });
@@ -113,12 +216,7 @@ const LoginMessage: React.FC<{
 }> = ({ content }) => {
   return (
     <Alert
-      style={{
-        marginBottom: 24,
-        backgroundColor: 'rgba(255, 255, 255, 0.05)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        color: 'rgba(255, 255, 255, 0.85)',
-      }}
+      className={useStyles().alertMessage}
       message={content}
       type="error"
       showIcon
@@ -128,6 +226,7 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
+  const [loading, setLoading] = useState(false);
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
   const { message } = App.useApp();
@@ -148,7 +247,11 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values, type: 'account' });
+      // const msg = await login({ ...values, type: 'account' });
+      // console.log(msg)
+      // return false
+      
+        let msg = {"status": "ok","type": "account","currentAuthority": "admin"}
       if (msg.status === 'ok') {
         // const defaultLoginSuccessMessage = intl.formatMessage({
         //   id: 'pages.login.success',
@@ -176,12 +279,12 @@ const Login: React.FC = () => {
   const { status } = userLoginState;
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} login-page`}>
       <Helmet>
         <title>
           {intl.formatMessage({
             id: 'menu.login',
-            defaultMessage: '登录页',
+            defaultMessage: '用戶認證',
           })}
           - {Settings.title}
         </title>
@@ -218,138 +321,105 @@ const Login: React.FC = () => {
       <Lang />
       {/* 左侧登录面板 */}
       <div className={styles.leftPanel}>
-        <div className={styles.loginForm}>
-          <div className={styles.logo}>
-            {false&&<img 
-              alt="logo" 
-              src={logoUrl} 
-              style={{ 
-                width: 40, 
-                height: 40, 
-                marginRight: 12,
-                filter: 'brightness(0) invert(1)'
-              }} 
-            />}
-            Ant Design
-          </div>
-
-          <LoginForm
-            contentStyle={{
-              minWidth: 280,
-              maxWidth: '100%',
-            }}
-            title="登录"
-            initialValues={{
-                username:"admin",
-                password:"ant.design",
-              autoLogin: true,
-            }}
-            onFinish={async (values) => {
-              await handleSubmit(values as API.LoginParams);
-            }}
-            submitter={{
-              searchConfig: {
-                submitText: intl.formatMessage({
-                  id: 'pages.login.submit',
-                  defaultMessage: '登录',
-                }),
-              },
-            }}
-          >
-            {status === 'error' && (
-              <LoginMessage
-                content={intl.formatMessage({
-                  id: 'pages.login.accountLogin.errorMessage',
-                  defaultMessage: '账户或密码错误(admin/ant.design)',
-                })}
-              />
-            )}
+        <div className={styles.controlPanel}>
+              <div className={styles.gridOverlay} />
+              
+              <div className={styles.panelHeader}>
+                <div className={styles.logoContainer}>
+                  <div className={`${styles.logo} login-logo`}>第三次冲击</div>
+                <div className={`${styles.logoSubtitle} login-logo-subtitle`}>系統訪問</div>
+                </div>
+                <div className={`${styles.panelTitle} login-panel-title`}>
+                  {loading ? '系統啟動中' : '用戶認證'}
+                </div>
+              </div>
+              
+              <div className={styles.divider} />
             
-            <ProFormText
-              name="username"
-              fieldProps={{
-                size: 'large',
-                prefix: <UserOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />,
-                style: {
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: 'rgba(255, 255, 255, 0.85)',
-                },
+            <LoginForm
+              contentStyle={{
+                minWidth: 280,
+                maxWidth: '100%',
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.username.placeholder',
-                defaultMessage: '用户名: admin or user',
-              })}
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <FormattedMessage
-                      id="pages.login.username.required"
-                      defaultMessage="请输入用户名!"
-                    />
-                  ),
-                },
-              ]}
-            />
-            <ProFormText.Password
-              name="password"
-              fieldProps={{
-                size: 'large',
-                prefix: <LockOutlined style={{ color: 'rgba(255,255,255,0.3)' }} />,
-                style: {
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: 'rgba(255, 255, 255, 0.85)',
-                },
+              initialValues={{
+                username: "admin",
+                password: "ant.design",
               }}
-              placeholder={intl.formatMessage({
-                id: 'pages.login.password.placeholder',
-                defaultMessage: '密码: ant.design',
-              })}
-              rules={[
-                {
-                  required: true,
-                  message: (
-                    <FormattedMessage
-                      id="pages.login.password.required"
-                      defaultMessage="请输入密码！"
-                    />
-                  ),
-                },
-              ]}
-            />
-
-            <div
-              style={{
-                marginBottom: 24,
+              onFinish={async (values) => {
+                setLoading(true);
+                await handleSubmit(values as API.LoginParams);
+                setLoading(false);
+              }}
+              submitter={{
+                render: (props) => (
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '30px' }}>
+                    <button
+                      className={`login-button`}
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        props.submit?.();
+                      }}
+                      disabled={loading}
+                      style={{
+                        padding: '12px 50px',
+                        fontSize: '14px',
+                        minWidth: '200px',
+                      }}
+                    >
+                      {loading ? '訪問中' : '登錄'}
+                    </button>
+                  </div>
+                ),
               }}
             >
-              <ProFormCheckbox 
-                noStyle 
-                name="autoLogin"
-                fieldProps={{
-                  style: {
-                    color: 'rgba(255, 255, 255, 0.65)',
-                  }
-                }}
-              >
-                <FormattedMessage
-                  id="pages.login.rememberMe"
-                  defaultMessage="自动登录"
+              {status === 'error' && (
+                <LoginMessage
+                  content="登入失敗請重試 (admin/ant.design)"
                 />
-              </ProFormCheckbox>
-            </div>
-          </LoginForm>
-        </div>
+              )}
+              
+              <ProFormText
+                name="username"
+                label="用戶名"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined />,
+                  className: 'login-input',
+                  prefixCls: styles.inputPrefix,
+                  placeholder: '請輸入用戶名',
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: '請輸入用戶名',
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="password"
+                label="密碼"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined />,
+                  className: 'login-input',
+                  prefixCls: styles.inputPrefix,
+                  placeholder: '請輸入密碼',
+                }}
+                rules={[
+                  {
+                    required: true,
+                    message: '請輸入密碼',
+                  },
+                ]}
+              />
+            </LoginForm>
+          </div>
       </div>
 
-      {/* 右侧视频背景面板 */}
+      {/* 右侧面板 - 星空效果仅显示在右侧 */}
       <div className={styles.rightPanel}>
-        {false &&<video autoPlay loop muted playsInline className={styles.videoBg}>
-          <source src={videoUrl} type="video/mp4" />
-          您的浏览器不支持视频标签。
-        </video>}
+        <StarFieldCanvas />
       </div>
     </div>
   );

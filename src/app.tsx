@@ -1,6 +1,6 @@
-import { LinkOutlined } from '@ant-design/icons';
+// import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
+// import { SettingDrawer } from '@ant-design/pro-components';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { Helmet } from '@umijs/max';
 import { history, Link } from '@umijs/max';
@@ -86,7 +86,7 @@ export const layout: RunTimeLayoutConfig = ({
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      console.log(location)
+      // console.log(location)
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
