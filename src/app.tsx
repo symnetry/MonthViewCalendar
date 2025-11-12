@@ -5,6 +5,7 @@ import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
 import { Helmet } from '@umijs/max';
 import { history, Link } from '@umijs/max';
 import React from 'react';
+import {  ConfigProvider,  theme } from 'antd';
 import {
   AvatarDropdown,
   AvatarName,
@@ -18,7 +19,19 @@ import { errorConfig } from './requestErrorConfig';
 import '@ant-design/v5-patch-for-react-19';
 import {tempmsg} from './tempmsg.js'
 
-// console.log("tempmsg",tempmsg)
+let themeConfig = {
+  "token": {
+    "colorPrimary": "#faad14",
+    "colorInfo": "#faad14"
+  },
+  "components": {
+    "Modal": {
+      "algorithm": true
+    }
+  },
+  "algorithm": theme.darkAlgorithm,
+  // "algorithm":"dark"
+}
 
 const isDev =
   process.env.NODE_ENV === 'development' || process.env.CI;
@@ -119,7 +132,7 @@ export const layout: RunTimeLayoutConfig = ({
     childrenRender: (children) => {
       // if (initialState?.loading) return <div>加载中……</div>;
       return (
-        <>
+        <ConfigProvider theme={themeConfig}>
       <Helmet>
         <meta itemprop="name" content="ant.design最佳尝试" />
         <meta itemprop="description" content="该栏描述了一个离职在家需要写一个个人作品的前端工程师的心路历程" />
@@ -151,8 +164,9 @@ export const layout: RunTimeLayoutConfig = ({
         <meta name="description" content="该栏描述了一个离职在家需要写一个个人作品的前端工程师的心路历程" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Helmet>
+      
           {children}
-        </>
+        </ConfigProvider>
       );
     },
     ...initialState?.settings,
