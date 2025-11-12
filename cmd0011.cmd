@@ -1,1 +1,0 @@
-scp -r dqn root@120.132.17.95:/website/website/
